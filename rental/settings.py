@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'rental_app.User'
+ALLOWED_HOSTS = ['*']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
