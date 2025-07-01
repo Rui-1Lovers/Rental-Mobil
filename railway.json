@@ -3,6 +3,13 @@
     "env": {
       "PYTHON_VERSION": "3.12"
     },
-    "start": "python manage.py migrate && gunicorn rental.wsgi:application --bind 0.0.0.0:$PORT"
+    "start": "python manage.py migrate && gunicorn rental.wsgi:application --bind 0.0.0.0:$PORT",
+    "nixpacksPlan": {
+      "phases": {
+        "setup": {
+          "nixPkgs": ["python312", "pip"]
+        }
+      }
+    }
   }
 }
