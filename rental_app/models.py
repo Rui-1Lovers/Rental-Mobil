@@ -39,6 +39,6 @@ class Rental(models.Model):
     tanggal_selesai = models.DateField()
     total_harga = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='proses')
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return f"Sewa {self.car} oleh {self.customer} ({self.status})"

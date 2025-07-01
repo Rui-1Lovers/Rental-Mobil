@@ -18,6 +18,11 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = get_user_model().objects.create(**user_data)
+        customer = Customer.objects.create(user=user, **validated_data)
+        return customer
 
 class RentalSerializer(serializers.ModelSerializer):
     class Meta:
