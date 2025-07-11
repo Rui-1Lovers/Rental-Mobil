@@ -2,7 +2,8 @@
   "build": {
     "env": {
       "PYTHON_VERSION": "3.12"
-    }
+    },
+    "command": "pip install -r requirement.txt && python manage.py collectstatic --noinput"
   },
   "start": "gunicorn rental.wsgi:application --bind 0.0.0.0:$PORT"
 }
