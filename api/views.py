@@ -10,7 +10,18 @@ class CarViewSet(viewsets.ModelViewSet):
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]  # agar hanya user login yang bisa akses (opsional)
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        # Kirim request ke serializer agar bisa ambil request.user sebagai user di Customer
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+
+    def get_queryset(self):
+        # Boleh akses hanya customer miliknya sendiri (opsional, bisa hapus jika semua boleh lihat)
+        user = self.request.user
+        return Customer.objects.filter(user=user)
 
 class RentalViewSet(viewsets.ModelViewSet):
     queryset = Rental.objects.all()
@@ -18,10 +29,15 @@ class RentalViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
-        """Kirim request ke serializer agar bisa ambil request.user sebagai admin"""
+        # Kirim request ke serializer agar bisa ambil request.user sebagai admin
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
+
+    def get_queryset(self):
+        # Boleh akses hanya rental yang dikelola oleh admin ini (opsional)
+        user = self.request.user
+        return Rental.objects.filter(admin=user)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

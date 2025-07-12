@@ -22,7 +22,8 @@ class Car(models.Model):
 
 # Pelanggan
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # Ganti OneToOne → ForeignKey agar satu user bisa punya banyak customer
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customers')
     nama = models.CharField(max_length=100)
     email = models.EmailField()
     no_telepon = models.CharField(max_length=15)
@@ -42,8 +43,8 @@ class Rental(models.Model):
     tanggal_selesai = models.DateField()
     total_harga = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='proses')
-    
-    # GANTI user → admin untuk menandakan admin yang mengelola penyewaan
+
+    # Admin = user yang menangani rental
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rental_dikelola')
 
     def __str__(self):
