@@ -14,19 +14,14 @@ class CarSerializer(serializers.ModelSerializer):
         model = Car
         fields = '__all__'
 
-# Customer (terkait ke user)
+# Customer (user dipilih dari daftar user yang sudah ada, bukan dibuat baru)
 class CustomerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    # Hanya bisa memilih dari user yang sudah ada, bisa disesuaikan filter-nya jika hanya admin
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Customer
         fields = '__all__'
-
-    def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        user = get_user_model().objects.create(**user_data)
-        customer = Customer.objects.create(user=user, **validated_data)
-        return customer
 
 # Rental
 class RentalSerializer(serializers.ModelSerializer):
@@ -39,7 +34,7 @@ class RentalSerializer(serializers.ModelSerializer):
         durasi = (validated_data['tanggal_selesai'] - validated_data['tanggal_mulai']).days
         validated_data['total_harga'] = durasi * car.harga_per_hari
 
-        # Jika ingin otomatis isi field admin dari request.user:
+        # Isi admin otomatis dari user yang sedang login
         request = self.context.get('request')
         if request and hasattr(request, "user"):
             validated_data['admin'] = request.user
