@@ -13,6 +13,11 @@ SECRET_KEY = 'django-insecure-f-nmslwhw_f9x^x#o0-%am7n$0hp6ft(*+n2=l3+o(6ayrm&2q
 DEBUG = True
 ALLOWED_HOSTS = ['*']  # Railway pakai wildcard
 
+# ✅ Tambahkan ini agar CSRF tidak error di Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://rental-mobil-production-f3ba.up.railway.app'
+]
+
 # Aplikasi
 INSTALLED_APPS = [
     'django.contrib.admin',
