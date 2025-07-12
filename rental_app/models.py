@@ -1,14 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# Create your models here.
+
+# Custom User
 class User(AbstractUser):
-    # extend user jika diperlukan, default saja cukup
     no_hp = models.CharField(max_length=20, blank=True, null=True)
     alamat = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.username
 
+# Mobil
 class Car(models.Model):
     plat_nomor = models.CharField(max_length=20)
     merk = models.CharField(max_length=50)
@@ -19,6 +20,7 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.plat_nomor} - {self.merk} {self.model}"
 
+# Pelanggan
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nama = models.CharField(max_length=100)
@@ -28,6 +30,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.nama
 
+# Penyewaan
 class Rental(models.Model):
     STATUS_CHOICES = [
         ('proses', 'Proses'),
@@ -39,6 +42,9 @@ class Rental(models.Model):
     tanggal_selesai = models.DateField()
     total_harga = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='proses')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    # GANTI user → admin untuk menandakan admin yang mengelola penyewaan
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rental_dikelola')
+
     def __str__(self):
         return f"Sewa {self.car} oleh {self.customer} ({self.status})"
