@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rental_app.models import Car, Customer, Rental, User
 from api.serializers import CarSerializer, CustomerSerializer, RentalSerializer, UserSerializer
+from rest_framework.permissions import AllowAny
+
 
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car.objects.all()
