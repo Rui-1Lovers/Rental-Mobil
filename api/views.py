@@ -10,7 +10,7 @@ class CarViewSet(viewsets.ModelViewSet):
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_serializer_context(self):
         # Kirim request ke serializer agar bisa ambil request.user sebagai user di Customer
