@@ -11,9 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Keamanan
 SECRET_KEY = 'django-insecure-f-nmslwhw_f9x^x#o0-%am7n$0hp6ft(*+n2=l3+o(6ayrm&2q'
 DEBUG = True
-ALLOWED_HOSTS = ['*']  # Railway pakai wildcard
+ALLOWED_HOSTS = ['*'] 
 
-# ✅ Tambahkan ini agar CSRF tidak error di Railway
 CSRF_TRUSTED_ORIGINS = [
     'https://rental-mobil-production-f3ba.up.railway.app'
 ]
@@ -29,10 +28,12 @@ INSTALLED_APPS = [
 
     'rental_app',
     'api',
+    'corsheaders',
     'rest_framework',
 ]
 
 AUTH_USER_MODEL = 'rental_app.User'
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Middleware
 MIDDLEWARE = [
@@ -43,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'rental.urls'
