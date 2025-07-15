@@ -23,7 +23,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_authenticated:
             return Customer.objects.filter(user=user)
-        return Customer.objects.all()  # ✅ anonymous user lihat semua
+        return Customer.objects.all()
 
 class RentalViewSet(viewsets.ModelViewSet):
     queryset = Rental.objects.all()

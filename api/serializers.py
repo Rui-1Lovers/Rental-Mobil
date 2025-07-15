@@ -45,9 +45,9 @@ class RentalSerializer(serializers.ModelSerializer):
         validated_data['total_harga'] = durasi * car.harga_per_hari
 
         request = self.context.get('request')
-        user = request.user if request and request.user.is_authenticated else None
+        user = request.user if request and hasattr(request, 'user') else None
 
-        if user is None:
+        if not user or not user.is_authenticated:
             from django.contrib.auth import get_user_model
             User = get_user_model()
             user = User.objects.first()
