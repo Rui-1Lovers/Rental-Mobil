@@ -33,6 +33,7 @@ class RentalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rental
         fields = '__all__'
+        read_only_fields = ['total_harga']  # ⛔ Jangan izinkan input total_harga
 
     def create(self, validated_data):
         car = validated_data['car']
@@ -40,13 +41,10 @@ class RentalSerializer(serializers.ModelSerializer):
         validated_data['total_harga'] = durasi * car.harga_per_hari
 
         request = self.context.get('request')
-        if request and hasattr(request, "user") and request.user.is_authenticated:
-            validated_data['admin'] = request.user
-        else:
+        user = request.user if request and hasattr(request, 'user') and request.user.is_authenticated else None
+        if not user:
             from django.contrib.auth import get_user_model
             User = get_user_model()
-            default_user = User.objects.first()
-            validated_data['admin'] = default_user
-            print("⚠️ Tidak ada user login, fallback ke default user:", default_user)
-        print("✅ Data rental yang akan disimpan:", validated_data)
+            user = User.objects.first()
+        validated_data['admin'] = user
         return super().create(validated_data)
