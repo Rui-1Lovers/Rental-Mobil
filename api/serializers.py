@@ -2,18 +2,15 @@ from rest_framework import serializers
 from rental_app.models import Car, Customer, Rental, User
 from django.contrib.auth import get_user_model
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'username', 'email', 'no_hp', 'alamat']
 
-
 class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = '__all__'
-
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,8 +29,6 @@ class CustomerSerializer(serializers.ModelSerializer):
 
         return Customer.objects.create(user=user, **validated_data)
 
-
-
 class RentalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rental
@@ -45,12 +40,13 @@ class RentalSerializer(serializers.ModelSerializer):
         validated_data['total_harga'] = durasi * car.harga_per_hari
 
         request = self.context.get('request')
-        user = request.user if request and hasattr(request, 'user') else None
-
-        if not user or not user.is_authenticated:
+        if request and hasattr(request, "user") and request.user.is_authenticated:
+            validated_data['admin'] = request.user
+        else:
             from django.contrib.auth import get_user_model
             User = get_user_model()
-            user = User.objects.first()
-
-        validated_data['admin'] = user
+            default_user = User.objects.first()
+            validated_data['admin'] = default_user
+            print("⚠️ Tidak ada user login, fallback ke default user:", default_user)
+        print("✅ Data rental yang akan disimpan:", validated_data)
         return super().create(validated_data)
