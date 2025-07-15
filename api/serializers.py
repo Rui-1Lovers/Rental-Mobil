@@ -22,7 +22,16 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        return Customer.objects.create(**validated_data)
+        user = request.user if request and request.user.is_authenticated else None
+
+        if user is None:
+            # Beri user default jika tidak login → pilih user dengan id tertentu misalnya user id=1
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            user = User.objects.first()  # ✅ fallback pakai user pertama
+
+        return Customer.objects.create(user=user, **validated_data)
+
 
 # Rental
 class RentalSerializer(serializers.ModelSerializer):

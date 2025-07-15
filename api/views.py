@@ -15,15 +15,15 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
     def get_serializer_context(self):
-        # Kirim request ke serializer agar bisa ambil request.user sebagai user di Customer
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
 
     def get_queryset(self):
-        # Boleh akses hanya customer miliknya sendiri (opsional, bisa hapus jika semua boleh lihat)
         user = self.request.user
-        return Customer.objects.filter(user=user)
+        if user.is_authenticated:
+            return Customer.objects.filter(user=user)
+        return Customer.objects.all()  # ✅ anonymous user lihat semua
 
 class RentalViewSet(viewsets.ModelViewSet):
     queryset = Rental.objects.all()
