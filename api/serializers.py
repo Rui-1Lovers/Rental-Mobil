@@ -22,8 +22,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        user = request.user if request and request.user.is_authenticated else None
-        return Customer.objects.create(user=user, **validated_data)
+        return Customer.objects.create(**validated_data)
 
 # Rental
 class RentalSerializer(serializers.ModelSerializer):
