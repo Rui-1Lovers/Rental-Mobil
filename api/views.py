@@ -28,18 +28,15 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class RentalViewSet(viewsets.ModelViewSet):
     queryset = Rental.objects.all()
     serializer_class = RentalSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_serializer_context(self):
-        # Kirim request ke serializer agar bisa ambil request.user sebagai admin
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
 
     def get_queryset(self):
-        # Boleh akses hanya rental yang dikelola oleh admin ini (opsional)
-        user = self.request.user
-        return Rental.objects.filter(admin=user)
+        return Rental.objects.all()
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
